@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giáng Sinh An Lành - 3D Tree & YouTube Music</title>
-    
+    <title>Giáng Sinh An Lành - Fix Music</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -38,7 +37,6 @@
             z-index: 2;
         }
 
-        /* PHẦN BÊN TRÁI: Chữ & QR */
         .left-panel {
             display: flex;
             flex-direction: column;
@@ -65,14 +63,6 @@
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
         }
 
-        .qr-label {
-            margin-top: 15px;
-            font-size: 14px;
-            color: var(--primary-green);
-            font-weight: bold;
-        }
-
-        /* PHẦN BÊN PHẢI: Cây thông 3D */
         .tree-wrapper {
             position: relative;
             width: 300px;
@@ -111,7 +101,6 @@
             z-index: 10;
         }
 
-        /* Tuyết rơi */
         .snowflake {
             position: fixed;
             top: -10px;
@@ -124,41 +113,38 @@
 
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* Nút điều khiển nhạc */
+        /* Nút điều khiển nhạc được làm nổi bật để kích hoạt Autoplay */
         .music-control {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
+            background: var(--bright-red);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 30px;
             cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 2px solid white;
             z-index: 100;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+            transition: 0.3s;
         }
-
-        footer {
-            background: rgba(0, 0, 0, 0.3);
-            text-align: center;
-            padding: 15px;
-            font-size: 12px;
-            color: #666;
+        .music-control.playing {
+            background: var(--primary-green);
         }
     </style>
 </head>
 <body>
 
-    <div id="youtube-player" style="display:none"></div>
+    <div id="youtube-player" style="position: fixed; bottom: 0; right: 0; width: 1px; height: 1px; opacity: 0.01;"></div>
 
-    <div class="music-control" id="playBtn" onclick="toggleMusic()">🎵 Đang tải nhạc...</div>
+    <div class="music-control" id="playBtn" onclick="toggleMusic()">⌛ Đang tải nhạc...</div>
 
     <div class="main-content">
         <div class="left-panel">
             <h1 class="greeting">MERRY<br>CHRISTMAS</h1>
             <div id="qrcode"></div>
-            <!-- <div class="qr-label">QUÉT MÃ ĐỂ XEM WEB</div> -->
+            <!-- <p style="color:var(--primary-green); font-weight:bold; margin-top:10px;">QUÉT ĐỂ XEM WEB</p> -->
         </div>
 
         <div class="tree-wrapper">
@@ -168,20 +154,15 @@
         </div>
     </div>
 
-    <!-- <footer>
-        &copy; 2025 Christmas 3D Experience
-    </footer> -->
-
     <script>
-        // // 1. KHỞI TẠO MÃ QR
-        // var currentUrl = window.location.href;
+        // // 1. QR Code
         // new QRCode(document.getElementById("qrcode"), {
-        //     text: currentUrl,
+        //     text: window.location.href,
         //     width: 140,
         //     height: 140
         // });
 
-        // 2. TẠO CÂY THÔNG 3D
+        // 2. Cây thông
         const tree = document.getElementById('tree');
         for (let i = 0; i < 35; i++) {
             const ring = document.createElement('div');
@@ -190,14 +171,11 @@
             ring.style.width = ring.style.height = size + 'px';
             ring.style.top = (i * 10) + 'px';
             ring.style.transform = `translateX(-50%) rotateX(75deg) rotateZ(${i * 15}deg)`;
-            if (i % 4 === 0) {
-                ring.style.borderColor = "#e74c3c";
-                ring.style.boxShadow = "0 0 15px #e74c3c";
-            }
+            if (i % 4 === 0) ring.style.borderColor = "#e74c3c";
             tree.appendChild(ring);
         }
 
-        // 3. TUYẾT RƠI
+        // 3. Tuyết
         setInterval(() => {
             const snow = document.createElement('div');
             snow.className = 'snowflake';
@@ -208,36 +186,54 @@
             setTimeout(() => snow.remove(), 7000);
         }, 150);
 
-        // 4. NHẠC YOUTUBE (Sử dụng ID từ link bạn gửi)
+        // 4. FIX NHẠC YOUTUBE
         var player;
-        const videoId = 'KCyf51lmMRA'; // ID trích xuất từ link của bạn
+        const videoId = 'XNrOanKR7KI'; 
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '0', width: '0',
                 videoId: videoId,
                 playerVars: { 
                     'autoplay': 0, 
                     'loop': 1, 
                     'playlist': videoId,
-                    'controls': 0
+                    'controls': 0,
+                    'origin': window.location.origin
                 },
-                events: { 'onReady': onPlayerReady }
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
             });
         }
 
         function onPlayerReady(event) {
-            document.getElementById('playBtn').innerText = "🎵 Bật Nhạc Noel";
+            const btn = document.getElementById('playBtn');
+            btn.innerText = "▶ NHẤN ĐỂ PHÁT NHẠC";
+            // Set volume lên tối đa
+            player.setVolume(100);
+        }
+
+        function onPlayerStateChange(event) {
+            const btn = document.getElementById('playBtn');
+            if (event.data == YT.PlayerState.PLAYING) {
+                btn.innerText = "⏸ TẮT NHẠC";
+                btn.classList.add('playing');
+            } else {
+                btn.innerText = "▶ BẬT NHẠC";
+                btn.classList.remove('playing');
+            }
         }
 
         function toggleMusic() {
-            let state = player.getPlayerState();
+            if (!player) return;
+            const state = player.getPlayerState();
             if (state == YT.PlayerState.PLAYING) {
                 player.pauseVideo();
-                document.getElementById('playBtn').innerText = "🎵 Bật Nhạc Noel";
             } else {
                 player.playVideo();
-                document.getElementById('playBtn').innerText = "⏸ Dừng Nhạc";
+                // Một số trình duyệt yêu cầu unMute sau khi play
+                player.unMute();
             }
         }
     </script>
