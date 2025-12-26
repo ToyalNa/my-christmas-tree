@@ -130,12 +130,9 @@
 </head>
 <body>
 
-    <!-- <audio id="noel-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+    <div id="youtube-player" style="position: absolute; top: -9999px; left: -9999px;"></div>
 
-    <div class="music-control" onclick="toggleMusic()">🎵 Nhạc Noel</div>
- -->
+<div class="music-control" onclick="toggleYoutubeMusic()">🎵 Bật/Tắt Nhạc Noel</div>
     <div class="main-content">
         <div class="greeting-container">
             <p class="greeting">MERRY<br>CHRISTMAS</p>
@@ -184,17 +181,7 @@
         }
         setInterval(createSnow, 100);
 
-        const music = document.getElementById('noel-music');
-        function toggleMusic() {
-            music.paused ? music.play() : music.pause();
-        }
-    </script>
-    <div id="youtube-player" style="position: absolute; top: -9999px; left: -9999px;"></div>
-
-<div class="music-control" onclick="toggleYoutubeMusic()">🎵 Bật/Tắt Nhạc Noel</div>
-
-<script>
-    // 1. Tải API của YouTube
+        // 1. Tải API của YouTube
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -230,6 +217,7 @@
             player.playVideo();
         }
     }
-</script>
+    </script>
+
 </body>
 </html>
