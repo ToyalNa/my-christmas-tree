@@ -196,7 +196,7 @@
 <script>
     // 1. Tải API của YouTube
     var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/watch?v=BPqTlDzn5-E";
+    tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -206,11 +206,11 @@
             height: '0',
             width: '0',
             // THAY ID VIDEO YOUTUBE Ở ĐÂY
-            videoId: 'lM6mDRhK_v8', 
+            videoId: 'BPqTlDzn5-E', 
             playerVars: {
                 'autoplay': 0,
                 'loop': 1,
-                'playlist': 'lM6mDRhK_v8' // Cần playlist để lặp lại 1 bài
+                'playlist': 'BPqTlDzn5-E' // Cần playlist để lặp lại 1 bài
             },
             events: {
                 'onReady': onPlayerReady
