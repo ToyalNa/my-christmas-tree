@@ -130,12 +130,12 @@
 </head>
 <body>
 
-    <audio id="noel-music" loop>
-        <source src="https://www.youtube.com/watch?v=BPqTlDzn5-E" type="audio/mpeg">
+    <!-- <audio id="noel-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <div class="music-control" onclick="toggleMusic()">🎵 Nhạc Noel</div>
-
+ -->
     <div class="main-content">
         <div class="greeting-container">
             <p class="greeting">MERRY<br>CHRISTMAS</p>
@@ -189,5 +189,47 @@
             music.paused ? music.play() : music.pause();
         }
     </script>
+    <div id="youtube-player" style="position: absolute; top: -9999px; left: -9999px;"></div>
+
+<div class="music-control" onclick="toggleYoutubeMusic()">🎵 Bật/Tắt Nhạc Noel</div>
+
+<script>
+    // 1. Tải API của YouTube
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/watch?v=BPqTlDzn5-E";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-player', {
+            height: '0',
+            width: '0',
+            // THAY ID VIDEO YOUTUBE Ở ĐÂY
+            videoId: 'lM6mDRhK_v8', 
+            playerVars: {
+                'autoplay': 0,
+                'loop': 1,
+                'playlist': 'lM6mDRhK_v8' // Cần playlist để lặp lại 1 bài
+            },
+            events: {
+                'onReady': onPlayerReady
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        // Player đã sẵn sàng
+    }
+
+    function toggleYoutubeMusic() {
+        var state = player.getPlayerState();
+        if (state == YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+        } else {
+            player.playVideo();
+        }
+    }
+</script>
 </body>
 </html>
